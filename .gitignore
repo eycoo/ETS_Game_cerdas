@@ -11,3 +11,23 @@
 *.sln
 *.slnx
 *.zip
+/[Mm]emoryCaptures/
+/[Rr]ecordings/
+*.pidb
+*.pdb
+*.mdb
+*.opendb
+*.VC.db
+*.user
+*.userprefs
+*.unityproj
+*.apk
+*.aab
+*.unitypackage
+sysinfo.txt
+crashlytics-build.properties
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
