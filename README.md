@@ -4,18 +4,17 @@ Game aksi *roguelite* 3D untuk ETS Game Cerdas. Pemain mengendalikan **Capy**, c
 
 ![Menu utama](img/01_main_menu.png)
 
-## Isi folder ini
+## Isi repo
 
 | File | Isi |
 |---|---|
-| `CapyConquest_Windows.zip` | Game siap main untuk Windows. Ekstrak, lalu jalankan `CapyConquest.exe`. Tidak perlu Unity. |
-| `CapyConquest_Project.zip` | Project Unity lengkap (Assets, Packages, ProjectSettings) untuk dibuka di Unity 6. |
+| `Assets/`, `Packages/`, `ProjectSettings/` | Project Unity lengkap (Unity 6000.6.0f1, URP). |
 | `Panduan_Presentasi_CapyConquest.md` | Naskah demo untuk Farras, Mumtaz, dan Kayla. |
 | `img/` | Screenshot dari game (semua diambil dari Play Mode). |
 
-Project kerjanya ada di `C:\Users\Mumtaza\GameCerdas_CapyConquest` (Unity 6000.6.0f1, URP).
+Build Windows (`CapyConquest.exe`) dan file zip tidak disimpan di repo (diabaikan lewat `.gitignore`). Buat sendiri dengan menu **Capy Conquest → 3. Build Windows Player**.
 
-> **Catatan versi:** kedua file zip dan semua screenshot di `img/` dibuat **sebelum** perubahan berikut: model karakter baru dari `CapyQuest_Assets`, serangan gaya HoloCure (bidik mouse, menyerang sambil berlari), dan penyeimbangan skill. Buat ulang build dengan menu **Capy Conquest → 3. Build Windows Player** sebelum dibagikan.
+> **Catatan versi:** semua screenshot di `img/` dibuat **sebelum** perubahan berikut: model karakter baru dari `CapyQuest_Assets`, serangan gaya HoloCure (bidik mouse, menyerang sambil berlari), dan penyeimbangan skill. Buat ulang build dengan menu **Capy Conquest → 3. Build Windows Player** sebelum dibagikan.
 
 ## Referensi game komersial
 
@@ -164,7 +163,7 @@ Catatan:
 
 ## Membuka project di Unity
 
-1. Buka Unity Hub, pilih **Add > Add project from disk**, lalu pilih folder project (`GameCerdas_CapyConquest`, atau hasil ekstrak `CapyConquest_Project.zip`).
+1. Clone repo ini (`git clone https://github.com/eycoo/ETS_Game_cerdas.git`), lalu di Unity Hub pilih **Add > Add project from disk** dan pilih folder hasil clone.
 2. Gunakan Unity **6000.6.0f1** (Unity 6). Import pertama butuh beberapa menit.
 3. Buka scene `Assets/Scenes/MainMenu.unity`, lalu tekan Play.
 
