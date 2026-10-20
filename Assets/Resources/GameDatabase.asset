@@ -1,0 +1,115 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: dd6f12bb4930732479af16206999e549, type: 3}
+  m_Name: GameDatabase
+  m_EditorClassIdentifier: Assembly-CSharp::GameDatabase
+  slimeBig: {fileID: 4855526364490973382, guid: 1323b465a12b1954d8fb854d867ab974, type: 3}
+  slimeSmall: {fileID: 1601888484378382176, guid: ca99da0ac3049d846a059e6279d37299, type: 3}
+  skeletonWarrior: {fileID: 2074226031813475883, guid: e13bdf7000c323341bceca1d1eb2ce20, type: 3}
+  skeletonArcher: {fileID: 939570707735817382, guid: 045bc6e17cc6dfa4ab747900a0962a4a, type: 3}
+  wizard: {fileID: 3049286485017304113, guid: 0a4efdbc167107b469c1e95149117a3b, type: 3}
+  bat: {fileID: 8264519915371403527, guid: 4faf48bb9dd3581438ce48b587ca10b7, type: 3}
+  golemBoss: {fileID: 7496911755194320288, guid: 0cf2c491d759cee4a92ca588d24cd46e, type: 3}
+  swordWave: {fileID: 1846857735374535017, guid: d7adebf30c5fe1c4eb104e447fe3ad18, type: 3}
+  magicOrb: {fileID: 5805935775381734862, guid: 9f961128e0f42a2489a8d4bd012a4300, type: 3}
+  arrow: {fileID: 3795700354063516953, guid: b3b26c3e43262f54ca2735fc022fa065, type: 3}
+  rock: {fileID: 7298662056940984395, guid: 62ff492bc9eca0842a9aefbac94de429, type: 3}
+  orbitYuzu: {fileID: 5275973980040382247, guid: 0659f06a95abbcc4b8eb92faf1983843, type: 3}
+  xpGem: {fileID: 6774735404980974516, guid: dd59825c55225e94bb5a35dd0443461b, type: 3}
+  yuzuHeal: {fileID: 7435277210260843352, guid: ed958d0916e46644884a8032bc1c5d73, type: 3}
+  chest: {fileID: 696805974470000708, guid: f9b2259e2ecaf0b409046c69a9524051, type: 3}
+  hotSpring: {fileID: 3644400178034881415, guid: 354698ff0345bb4489d21c1b192ce484, type: 3}
+  goldenYuzu: {fileID: 6354993140774558760, guid: 3291d25eeea73384a8d68358b65cc9fe, type: 3}
+  flashMaterial: {fileID: 2100000, guid: e03d8b0311ec13f498009ce8d3edcfeb, type: 2}
+  decalMaterial: {fileID: 2100000, guid: a2e73f5d6892d074a9aae7e56fdcf724, type: 2}
+  additiveMaterial: {fileID: 2100000, guid: 3f4661f38b59b914c9be1874e826404b, type: 2}
+  debrisMaterial: {fileID: 2100000, guid: 867f70d9e3be2754699f5a51b3aa9e0c, type: 2}
+  lineMaterial: {fileID: 2100000, guid: 3c1fc6c9fbc8569478f71f0c04928fdc, type: 2}
+  softCircle: {fileID: 2800000, guid: 598076b838b513b43b36a9e190c93215, type: 3}
+  ringTexture: {fileID: 2800000, guid: 05f982a00bce2b24b98703d3e5685ffb, type: 3}
+  sparkTexture: {fileID: 2800000, guid: fa5c758a88ce2024ea7cb896db02e73b, type: 3}
+  starTexture: {fileID: 2800000, guid: f13001bae99960b4894e4f31316d8898, type: 3}
+  telegraphCircle: {fileID: 2800000, guid: 3ac506443ca74a645a473013d70257b2, type: 3}
+  telegraphRect: {fileID: 2800000, guid: 156f70fea4b80514d907f7e9d020d4fb, type: 3}
+  spawnRune: {fileID: 2800000, guid: c7b29fb8ffd8386489cd983660cc0072, type: 3}
+  cubeMesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+  titleFont: {fileID: 12800000, guid: b3b66a7bef5f50a4da5c1a658daad3c3, type: 3}
+  bodyFont: {fileID: 12800000, guid: 6cf04b3aa98ebe54cbfb6f667af5f278, type: 3}
+  rounded: {fileID: 21300000, guid: e2ff00e05d8026f4b90fa1cca0d5e1ad, type: 3}
+  roundedSmall: {fileID: 21300000, guid: 045f88a65fe2b324487582788906ac58, type: 3}
+  circle: {fileID: 21300000, guid: c255bdffe2cda314499406761bca7b29, type: 3}
+  ring: {fileID: 21300000, guid: 5768e000876315b4fada0074717354c6, type: 3}
+  glow: {fileID: 21300000, guid: 75b224ca5edcb2042bd4595ffc28c4d3, type: 3}
+  vignette: {fileID: 21300000, guid: 05f0b25ec9fed7a42a5a55277ae658a9, type: 3}
+  heart: {fileID: 21300000, guid: bea2d858f64471742903cb0f37a9d0dd, type: 3}
+  capyFace: {fileID: 21300000, guid: e5f020a2ba15435468563715be9e5b3b, type: 3}
+  dashIcon: {fileID: 21300000, guid: 490e1ac189d9fa44cb4e42c633e78a97, type: 3}
+  skullIcon: {fileID: 21300000, guid: 9c584cf4a12088b48954d3ca572b0e33, type: 3}
+  clockIcon: {fileID: 21300000, guid: 24753eb31229efa4088d64f1a2837ba6, type: 3}
+  gemIcon: {fileID: 21300000, guid: bf35b16db9540b74b95169d09d31a803, type: 3}
+  upgradeIcons:
+  - {fileID: 21300000, guid: 1ac5d895f8a8b3047837feaf61110248, type: 3}
+  - {fileID: 21300000, guid: 007a62ae82fb6d44e9661a70dcdd97c9, type: 3}
+  - {fileID: 21300000, guid: c232aae312361564996fb44f4145eaf6, type: 3}
+  - {fileID: 21300000, guid: 15ff7cdc977ecf24e9c3bf6a9163fcef, type: 3}
+  - {fileID: 21300000, guid: 87b2f76dc30f76d468be13e2d039cb8a, type: 3}
+  - {fileID: 21300000, guid: bd79df4ef38de2642b76a1cd6c3d3994, type: 3}
+  - {fileID: 21300000, guid: bccd2b7da56234840b6c0e1869a1a1f6, type: 3}
+  - {fileID: 21300000, guid: cee14aede081e314f8b7e4ae8d6d399f, type: 3}
+  - {fileID: 21300000, guid: e0194dbae34de3f47b0c87bab275096d, type: 3}
+  - {fileID: 21300000, guid: 5f340691f9fc98b46ae69fb5a8780213, type: 3}
+  - {fileID: 21300000, guid: d7cb1eeb7b828ab4bb5b88b276cc5d11, type: 3}
+  - {fileID: 21300000, guid: 2b6297b916a21834290886811a0d62eb, type: 3}
+  - {fileID: 21300000, guid: b0089f28f12dad2488e0f379bb4b71af, type: 3}
+  - {fileID: 21300000, guid: 788e60d56aafbdf47add19c1fb004b2e, type: 3}
+  - {fileID: 21300000, guid: 73a8319167a0cdf47bed1daf04d0adf1, type: 3}
+  - {fileID: 21300000, guid: bc403c20c1816c44d8bc44e94d857e36, type: 3}
+  - {fileID: 21300000, guid: 5bc105290ad6bd2438a3a6bc4875be0f, type: 3}
+  sfx:
+  - {fileID: 8300000, guid: 0ae62c8a35ac7b54bb764aa19bbed78c, type: 3}
+  - {fileID: 8300000, guid: d845db17b4b72624da4dfcd475ac6cdb, type: 3}
+  - {fileID: 8300000, guid: 0b533afd6937a734181317d4fbbec58f, type: 3}
+  - {fileID: 8300000, guid: afc9ecf6ed6a80c479152b819954d6b4, type: 3}
+  - {fileID: 8300000, guid: 711ce43046697bf4ca9e44a396e37f81, type: 3}
+  - {fileID: 8300000, guid: e514da7a4bb16c84fbeb205c48585b0a, type: 3}
+  - {fileID: 8300000, guid: e7df6baaae339cc459d74fb064e4163d, type: 3}
+  - {fileID: 8300000, guid: 9195f548428c7b34e87f8a5063741a89, type: 3}
+  - {fileID: 8300000, guid: 594c1e7d64ee2aa4992630ee8bceb577, type: 3}
+  - {fileID: 8300000, guid: a6a7dbb719741db4a8f8515d34ef61d4, type: 3}
+  - {fileID: 8300000, guid: 2adff999f469ae745bffb1897894685f, type: 3}
+  - {fileID: 8300000, guid: d529ce6c1d0e37240abc314fd3ff0e38, type: 3}
+  - {fileID: 8300000, guid: 40277363093ded248b034fa406803c07, type: 3}
+  - {fileID: 8300000, guid: dd92411a3ed6c96478eefd804c760f87, type: 3}
+  - {fileID: 8300000, guid: e09e92968d6c5214291dc8708f40a460, type: 3}
+  - {fileID: 8300000, guid: 71e7407e56115b54d90a9e8cbd4565ae, type: 3}
+  - {fileID: 8300000, guid: 55ad46a4428305d429a371b8dd2b0657, type: 3}
+  - {fileID: 8300000, guid: d9d5f2bf2cf7c8942bf0d3b222aeec18, type: 3}
+  - {fileID: 8300000, guid: 51e89ca7e569964489a9c09bcd66c9b0, type: 3}
+  - {fileID: 8300000, guid: 7280ea62892b3bc4ca46eb16cef158d9, type: 3}
+  - {fileID: 8300000, guid: 3184f9601c82697468effb18e385295c, type: 3}
+  - {fileID: 8300000, guid: 0649449ea4241ca4183614376f07eaac, type: 3}
+  - {fileID: 8300000, guid: 7e7b09753f6d489469d44dffbd479359, type: 3}
+  - {fileID: 8300000, guid: adb04b74db175a4438feba0c43e1cbc2, type: 3}
+  - {fileID: 8300000, guid: 0d4412bf7c41edc42a3a5f777f9e2322, type: 3}
+  - {fileID: 8300000, guid: c3ecdaa97f9dce448bc6f1c1e8c20fe9, type: 3}
+  - {fileID: 8300000, guid: 3364406649265094ab5a1e506f05534a, type: 3}
+  - {fileID: 8300000, guid: a84a334dcfc70c74db4acd00695b00fa, type: 3}
+  - {fileID: 8300000, guid: cb0d84bcb77c03e43895914579f04aa4, type: 3}
+  - {fileID: 8300000, guid: 3d065928e357c634aae2263712b12cee, type: 3}
+  - {fileID: 8300000, guid: 952ce065312b0e24bac695a7654692e7, type: 3}
+  - {fileID: 8300000, guid: 84a8481c204b62347906ba231a41814e, type: 3}
+  - {fileID: 8300000, guid: b29e62adf8341d2418654d4863390db9, type: 3}
+  - {fileID: 8300000, guid: cd34c64144404de4ab899ee96b7a9034, type: 3}
+  musicMenu: {fileID: 8300000, guid: b1d346801cea57149b1e681e1a5a9702, type: 3}
+  musicDungeon: {fileID: 8300000, guid: ecf518d33a9b9234c8fba298f18a63d9, type: 3}
+  musicBoss: {fileID: 8300000, guid: 7abfd9b618826194aa2ed67eb3c72221, type: 3}
+  musicVictory: {fileID: 8300000, guid: 50516e12301be9a42987f3c1f8c1f125, type: 3}
