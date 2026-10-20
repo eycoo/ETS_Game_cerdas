@@ -1,0 +1,16 @@
+# File biner: jangan diubah line ending-nya dan jangan di-diff sebagai teks
+*.png binary
+*.jpg binary
+*.wav binary
+*.mp3 binary
+*.ogg binary
+*.fbx binary
+*.ttf binary
+*.otf binary
+
+# Scene dan prefab Unity (YAML) digabung dengan UnityYAMLMerge jika dikonfigurasi
+*.unity merge=unityyamlmerge
+*.prefab merge=unityyamlmerge
+*.asset merge=unityyamlmerge
+*.mat merge=unityyamlmerge
+*.meta merge=unityyamlmerge
