@@ -102,16 +102,21 @@ public abstract class EnemyBase : MonoBehaviour
         }
     }
 
-    // Untuk AI yang mengganti material (misal mata Golem jadi merah saat marah).
-    protected void SetMaterial(Renderer target, Material mat)
+    // Untuk AI yang mengganti material (misal kristal Golem jadi merah saat marah).
+    // Hanya slot yang berisi salah satu material `from` yang diganti, karena model impor
+    // menggabungkan bagian menyala dan tidak menyala dalam satu renderer.
+    protected void ReplaceMaterial(Renderer target, Material mat, Material[] from)
     {
         for (int i = 0; i < renderers.Length; i++)
         {
             if (renderers[i] != target)
                 continue;
-            Material[] arr = new Material[originalMaterials[i].Length];
+            Material[] arr = (Material[])originalMaterials[i].Clone();
             for (int k = 0; k < arr.Length; k++)
-                arr[k] = mat;
+            {
+                if (System.Array.IndexOf(from, arr[k]) >= 0)
+                    arr[k] = mat;
+            }
             originalMaterials[i] = arr;
             if (!flashing)
                 renderers[i].sharedMaterials = arr;

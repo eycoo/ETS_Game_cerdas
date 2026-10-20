@@ -4,10 +4,14 @@ using UnityEngine;
 // Statistik Capy yang berubah karena upgrade (lihat UpgradeLibrary).
 public class PlayerStats
 {
+    // Nilai dasar: bonus Sharp Sword dan Chill Vibes dihitung dari sini (dijumlah, tidak berlipat).
+    public const float BaseDamage = 12f;
+    public const float BaseAttackInterval = 0.6f;
+
     public float MaxHP = 100f;
     public float MoveSpeed = 6.2f;
-    public float AttackInterval = 0.6f;
-    public float Damage = 12f;
+    public float AttackInterval = BaseAttackInterval;
+    public float Damage = BaseDamage;
     public float CritChance = 0.05f;
     public float CritMultiplier = 2f;
     public float ProjectileSpeed = 16f;

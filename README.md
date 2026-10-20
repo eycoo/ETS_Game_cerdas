@@ -15,18 +15,20 @@ Game aksi *roguelite* 3D untuk ETS Game Cerdas. Pemain mengendalikan **Capy**, c
 
 Project kerjanya ada di `C:\Users\Mumtaza\GameCerdas_CapyConquest` (Unity 6000.6.0f1, URP).
 
+> **Catatan versi:** kedua file zip dan semua screenshot di `img/` dibuat **sebelum** perubahan berikut: model karakter baru dari `CapyQuest_Assets`, serangan gaya HoloCure (bidik mouse, menyerang sambil berlari), dan penyeimbangan skill. Buat ulang build dengan menu **Capy Conquest → 3. Build Windows Player** sebelum dibagikan.
+
 ## Referensi game komersial
 
 Game ini mengikuti rumus **Archero** (Habby, 2019), game mobile yang sangat laku. Habby juga pembuat **Capybara Go!** (2024), game bertema capybara yang sedang populer, jadi temanya nyambung. Ciri Archero yang dipakai:
 
 - Ruangan demi ruangan. Pintu terkunci sampai semua musuh kalah, lalu pintu utara terbuka.
-- **Serangan otomatis saat diam**: Capy menyerang musuh terdekat hanya ketika berhenti bergerak. Bergerak berarti menghindar. Ini membuat pemain terus memilih antara menyerang dan menghindar.
 - **Naik level, pilih 1 dari 3 skill** yang muncul acak, sehingga setiap permainan berbeda.
 
 Ditambah beberapa ciri dari game populer lain:
 
 | Fitur | Diambil dari |
 |---|---|
+| **Serangan otomatis sambil berlari, arah dibidik dengan mouse**: selama ada musuh dalam jangkauan, Capy terus menebas sesuai kecepatan serang (30% lebih lambat saat berlari, penuh saat diam). Arah tebasan mengikuti kursor mouse (atau stik kanan gamepad), sehingga pemain bisa lari menghindar sambil menyerang ke arah lain. | HoloCure – Save the Fans! |
 | Dash dengan kebal sesaat (i-frame), kartu judul boss | Hades |
 | Pintu terkunci sampai ruangan bersih | The Binding of Isaac |
 | Kristal XP yang tertarik ke pemain (magnet) | Vampire Survivors |
@@ -52,7 +54,7 @@ Ditambah beberapa ciri dari game populer lain:
 | Tombol | Fungsi |
 |---|---|
 | `W A S D` / panah | Bergerak |
-| Diam | Menyerang otomatis musuh terdekat |
+| Mouse / stik kanan | Membidik arah serangan otomatis (tanpa bidikan: ke musuh terdekat) |
 | `Space` / `Shift` | Dash (kebal sesaat, bisa menembus shockwave dan panah) |
 | `1` `2` `3` / klik mouse | Memilih kartu skill |
 | `V` / `Tab` | AI Vision (melihat "isi kepala" AI) |
@@ -100,15 +102,15 @@ Saat aktif, game menampilkan:
 
 | Skill | Efek | Maks |
 |---|---|---|
-| Twin Slash | Setiap ayunan menembak satu gelombang lagi | 3 |
-| Wide Swing | +1 gelombang sejajar | 2 |
-| Diagonal Slash | +2 gelombang miring | 2 |
-| Rear Guard | Juga menebas ke belakang | 1 |
+| Twin Slash | Setiap ayunan menembak satu gelombang lagi (50% damage) | 3 |
+| Wide Swing | +1 gelombang sejajar (50% damage) | 2 |
+| Diagonal Slash | +2 gelombang miring (50% damage) | 2 |
+| Rear Guard | Juga menebas ke belakang (50% damage) | 1 |
 | Piercing Edge | Gelombang menembus +1 musuh | 3 |
 | Bouncy Blade | Gelombang memantul ke +1 musuh | 3 |
-| Sharp Sword | Damage +25% | 5 |
+| Sharp Sword | Damage +25% dari damage dasar (dijumlah, maks +125%) | 5 |
 | Zoomies | Kecepatan gerak +12% | 3 |
-| Chill Vibes | Kecepatan serang +20% | 5 |
+| Chill Vibes | Kecepatan serang +20% dari kecepatan dasar (dijumlah, maks +100%) | 5 |
 | Thick Fur | Max HP +25 dan heal 25 | 5 |
 | Yuzu Snack | Heal 40% (muncul jika HP di bawah 75%) | - |
 | Yuzu Orbit | +1 jeruk yang berputar mengelilingi Capy | 3 |
@@ -117,6 +119,8 @@ Saat aktif, game menampilkan:
 | Lucky Leaf | Peluang kritikal +12% | 3 |
 | Dash Master | Cooldown dash -30% dan dash melukai musuh | 2 |
 | Munchies | Heal 3 HP setiap musuh kalah | 2 |
+
+Penyeimbangan: dulu Sharp Sword dan Chill Vibes berlipat (1,25⁵ = 3,05x damage; 1,2⁵ = 2,49x kecepatan serang) dan semua gelombang tambahan damage penuh, sehingga damage ke satu musuh bisa mencapai sekitar 125x. Sekarang bonus keduanya dijumlah dari nilai dasar, gelombang tambahan hanya 50% damage, dan kecepatan serang turun 30% saat berlari. Perkiraan di atas kertas: maksimal sekitar 31x saat diam dan 22x saat berlari. Angka ini belum diuji di Play Mode. Pengalinya bisa diatur di komponen `PlayerCombat` (`movingAttackSpeed`, `extraWaveDamage`).
 
 ## Tingkat kesulitan
 
@@ -133,6 +137,8 @@ Pengali ini dikalikan lagi dengan pengali per ruangan: HP 1x, 1,6x, 2x, 2,6x dan
 ## Hasil pengujian
 
 Semua angka di bawah diukur di Play Mode dengan Autopilot sebagai pemain dan mode Normal (skrip `Assets/Editor/CapyAutoTest.cs`). Waktu adalah waktu game, jadi tidak terpengaruh pengali kecepatan uji.
+
+> **Perlu diuji ulang:** uji A sampai F dilakukan pada versi lama, saat Capy hanya menyerang ketika diam dan skill masih berlipat. Sistem serangan dan skill sudah berubah (lihat bagian Skill), jadi durasi dan sisa HP di tabel ini tidak lagi mewakili versi sekarang.
 
 | Uji | Versi | R1 | R2 | R3 | R4 | Boss | Total | Hasil |
 |---|---|---|---|---|---|---|---|---|
@@ -162,13 +168,37 @@ Catatan:
 2. Gunakan Unity **6000.6.0f1** (Unity 6). Import pertama butuh beberapa menit.
 3. Buka scene `Assets/Scenes/MainMenu.unity`, lalu tekan Play.
 
-Semua model, tekstur, ikon, suara, prefab, dan kedua scene dibuat ulang dari kode lewat menu **Capy Conquest** di editor:
+Tekstur, ikon, suara, prefab, dan kedua scene dibuat ulang dari kode lewat menu **Capy Conquest** di editor. Model karakter diambil dari file FBX di `Assets/Art/Models` (lihat bagian Model karakter):
 
 | Menu | Fungsi |
 |---|---|
 | `1. Build All` | Membuat ulang seluruh tekstur, ikon, material, suara, musik, prefab, dan scene (sekitar 1 menit) |
-| `2. Rebuild Prefabs + Scenes only` | Setelah mengubah angka musuh atau tata letak ruangan |
+| `2. Rebuild Prefabs + Scenes only` | Setelah mengubah angka musuh, tata letak ruangan, atau model karakter |
 | `3. Build Windows Player` | Membuat `Build/CapyConquest/CapyConquest.exe` |
+
+Perubahan di `Assets/Editor` (misalnya `CapyArt.cs`) baru terlihat setelah menu 2 dijalankan. Script game di `Assets/Scripts` langsung aktif tanpa rebuild. Jalankan menu saat tidak sedang Play Mode.
+
+### Model karakter
+
+Model karakter berasal dari asset pack tim `CapyQuest_Assets` (dibuat prosedural dengan Blender, lihat README di folder itu). File FBX-nya disalin ke `Assets/Art/Models` dan dimuat oleh `CapyArt.cs`:
+
+| Di game | Model |
+|---|---|
+| Capy (player) | `Kapi.fbx` |
+| Slime dan Slimelet | `Goo.fbx` (ukuran Slimelet 0,55x) |
+| Skeleton | `BoneKnight.fbx` |
+| Wizard | `HexMage.fbx` |
+| Eye Bat | `Peeper.fbx` |
+| Golem King | `CrystalGolem.fbx` |
+| Skeleton Archer | Masih dari primitif Unity (tidak ada model pemanah) |
+
+Cara pemuatan:
+
+- Setting import FBX (skala 1, Bake Axis Conversion, material dari MaterialDescription) diterapkan otomatis oleh `Assets/Editor/CapyModelImport.cs`.
+- Bagian model diberi nama yang dicari script animasi (misalnya `Leg_L` menjadi `LegL`, pedang Kapi menjadi `SwordPivot`) dan dijadikan anak langsung `Body`.
+- Setiap bagian dibungkus pivot tanpa rotasi, dan mesh di dalamnya diputar 180°. Ada dua alasan. Pertama, FBX dari Blender menghadap -Z di Unity, sedangkan game menganggap depan = +Z. Kedua, script animasi menimpa rotasi kaki, lengan, dan sayap secara absolut, sehingga rotasi bawaan FBX harus disimpan di mesh, bukan di pivot.
+- Model diskalakan ke tinggi model primitif lama (Capy 1,95 m, Skeleton 2,1 m, Wizard 2,4 m, Golem 5 m), supaya collider dan health bar tetap pas.
+- Material `Glow_*` diganti material glow project agar terkena Bloom. Kristal Golem berganti warna per fase lewat `EnemyBase.ReplaceMaterial`, yang hanya mengganti slot kristal.
 
 ### Struktur kode
 
@@ -182,12 +212,14 @@ Assets/Scripts
   Player/        PlayerController, PlayerHealth, PlayerCombat, PlayerVisual, PlayerStats, AutoPilot
   UI/            GameUI (HUD dan panel), WorldUI (angka damage, bar, label AI), MainMenuController
   Upgrades/      UpgradeLibrary (17 skill)
-Assets/Editor    Builder aset, prefab, scene, dan uji otomatis
+Assets/Editor    Builder aset, prefab, scene, uji otomatis, setting import FBX (CapyModelImport)
+Assets/Art/Models  Model karakter FBX dari CapyQuest_Assets
 ```
 
 ## Kredit
 
 - Kelompok: Farras, Mumtaz, Kayla. Mata kuliah Game Cerdas, Teknik Informatika ITS.
 - Font: **Lilita One** dan **Varela Round** dari Google Fonts, lisensi SIL Open Font License (file lisensi ada di `Assets/Fonts`).
-- Semua model 3D, tekstur, ikon, efek, suara, dan musik dibuat secara prosedural di dalam project, tanpa aset pihak ketiga.
+- Model karakter dari asset pack tim `CapyQuest_Assets`. Menurut README asset pack itu, modelnya dibuat prosedural dengan Blender oleh tim, dibantu AI.
+- Model properti level, tekstur, ikon, efek, suara, dan musik dibuat secara prosedural di dalam project, tanpa aset pihak ketiga.
 - Desain karakter mengikuti gambar konsep di folder `ETS`.

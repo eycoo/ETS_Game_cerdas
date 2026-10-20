@@ -6,6 +6,8 @@ Pembagian: **Farras** membuka (konsep, referensi, tur project), **Mumtaz** demo 
 
 ## Persiapan sebelum mulai
 
+- [ ] `CapyConquest_Windows.zip` lama dibuat sebelum model baru dan serangan gaya HoloCure. Buat build baru dulu lewat menu **Capy Conquest → 3. Build Windows Player** di Unity, lalu zip ulang.
+- [ ] Jalankan Autopilot (`F10`) sampai menang sekali dan catat waktunya. Angka uji di README masih dari versi lama.
 - [ ] Ekstrak `CapyConquest_Windows.zip`, jalankan `CapyConquest.exe` sekali untuk memastikan suara keluar. Game terbuka layar penuh; `Alt + Enter` untuk mode jendela.
 - [ ] Buka juga project di Unity (untuk bagian kode), scene `Assets/Scenes/CapyConquest.unity`.
 - [ ] Hafalkan tombol darurat. Tombol ini tidak tertulis di layar game:
@@ -36,7 +38,7 @@ Saran: pilih **MODE: EASY** di menu utama untuk demo, atau nyalakan `F1` sejak a
 **Tampilan layar:** Klik **HOW TO PLAY**.
 
 **Narasi:**
-"Kami memakai game mobile **Archero** dari Habby sebagai referensi utama. Archero sangat laku, dan Habby juga pembuat Capybara Go!, game capybara yang sedang populer. Dari Archero kami ambil tiga hal. Pertama, ruangan demi ruangan: pintu terkunci sampai semua musuh kalah. Kedua, Capy menyerang otomatis hanya saat diam, jadi pemain selalu memilih antara menyerang atau menghindar. Ketiga, setiap naik level kita memilih satu dari tiga skill acak, sehingga tiap permainan berbeda. Kami juga menambahkan dash yang membuat kebal sesaat seperti di Hades, dan kristal XP yang tertarik ke pemain seperti di Vampire Survivors.
+"Kami memakai game mobile **Archero** dari Habby sebagai referensi utama. Archero sangat laku, dan Habby juga pembuat Capybara Go!, game capybara yang sedang populer. Dari Archero kami ambil dua hal. Pertama, ruangan demi ruangan: pintu terkunci sampai semua musuh kalah. Kedua, setiap naik level kita memilih satu dari tiga skill acak, sehingga tiap permainan berbeda. Untuk serangan kami memakai gaya **HoloCure**: Capy menyerang otomatis terus-menerus selama ada musuh dalam jangkauan, juga sambil berlari, dan arah tebasannya dibidik dengan mouse. Jadi pemain bisa menghindar ke satu arah sambil menyerang ke arah lain. Kami juga menambahkan dash yang membuat kebal sesaat seperti di Hades, dan kristal XP yang tertarik ke pemain seperti di Vampire Survivors.
 
 Di kolom kanan terlihat bagian terpenting untuk mata kuliah ini: setiap musuh memakai teknik AI yang berbeda. Slime memakai steering, skeleton memakai finite state machine dan A*, wizard dan boss memakai behavior tree, kelelawar memakai flocking."
 
@@ -45,7 +47,7 @@ Di kolom kanan terlihat bagian terpenting untuk mata kuliah ini: setiap musuh me
 **Tampilan layar:** Unity Editor. Tunjukkan panel Project: folder `Assets/Scripts` (AI, Enemies, Player, Level, UI). Lalu Hierarchy scene `CapyConquest`: `Level` berisi `Room0_CapyCamp` sampai `Room5`, `Player`, `GameManager`, `Main Camera`. Klik `Room2`, tunjukkan komponen `RoomController` (daftar Waves dan pengali HP).
 
 **Narasi:**
-"Ini project-nya di Unity 6 dengan URP. Semua model kami bangun dari bentuk dasar Unity, dan tekstur, ikon, suara, serta musiknya dibuat dengan kode, jadi tidak ada aset pihak ketiga. Level terdiri dari kemah dan lima ruangan. Setiap ruangan punya `RoomController` yang mengatur gelombang musuh. Contohnya Ruang 2 punya tiga gelombang, dan HP musuhnya 1,6 kali lipat supaya kesulitan naik bertahap. Semua musuh turunan dari `EnemyBase` yang mengurus darah, knockback, dan efek. Tiap jenis musuh hanya mengisi fungsi `Think()` dengan teknik AI-nya masing-masing. Sekarang Mumtaz akan memperlihatkan gameplay-nya."
+"Ini project-nya di Unity 6 dengan URP. Model karakternya kami buat sendiri di Blender lalu diimpor sebagai FBX, sedangkan tekstur, ikon, suara, dan musiknya dibuat dengan kode, jadi tidak ada aset pihak ketiga. Level terdiri dari kemah dan lima ruangan. Setiap ruangan punya `RoomController` yang mengatur gelombang musuh. Contohnya Ruang 2 punya tiga gelombang, dan HP musuhnya 1,6 kali lipat supaya kesulitan naik bertahap. Semua musuh turunan dari `EnemyBase` yang mengurus darah, knockback, dan efek. Tiap jenis musuh hanya mengisi fungsi `Think()` dengan teknik AI-nya masing-masing. Sekarang Mumtaz akan memperlihatkan gameplay-nya."
 
 ---
 
@@ -56,14 +58,14 @@ Di kolom kanan terlihat bagian terpenting untuk mata kuliah ini: setiap musuh me
 **Tampilan layar:** Dari menu klik **PLAY**. Di Capy Camp, gerakkan Capy dengan WASD, tekan `Space` untuk dash.
 
 **Narasi:**
-"Kita mulai di Capy Camp yang aman. WASD untuk bergerak, Space untuk dash. Di kiri atas ada darah dan XP, di kanan atas waktu dan jumlah musuh yang dikalahkan. Panah hijau menunjuk ke pintu utara."
+"Kita mulai di Capy Camp yang aman. WASD untuk bergerak, mouse untuk membidik arah serangan, Space untuk dash. Di kiri atas ada darah dan XP, di kanan atas waktu dan jumlah musuh yang dikalahkan. Panah hijau menunjuk ke pintu utara."
 
 ### 2.2 Slime dan steering (03:00 - 04:00)
 
-**Tampilan layar:** Masuk Ruang 1. Begitu slime muncul, tekan `V` untuk AI Vision. Diam sebentar agar Capy menyerang.
+**Tampilan layar:** Masuk Ruang 1. Begitu slime muncul, tekan `V` untuk AI Vision. Arahkan mouse ke slime agar tebasan Capy mengenai mereka.
 
 **Narasi:**
-"Begitu masuk, pintu di belakang tertutup dan slime muncul dari portal ungu. Saya tekan V untuk AI Vision. Di atas setiap slime tertulis tekniknya, STEERING. Garis hijau adalah gaya **Seek** menuju Capy, garis oranye **Separation** supaya slime tidak bertumpuk, dan garis biru **Wander** agar geraknya tidak kaku. Setiap kali akan melompat, ketiga gaya ini dijumlahkan dengan bobot untuk menentukan arah lompatan. Slime besar membelah jadi dua saat kalah. Perhatikan juga: saat saya diam, Capy menebas otomatis. Begitu saya bergerak, serangannya berhenti."
+"Begitu masuk, pintu di belakang tertutup dan slime muncul dari portal ungu. Saya tekan V untuk AI Vision. Di atas setiap slime tertulis tekniknya, STEERING. Garis hijau adalah gaya **Seek** menuju Capy, garis oranye **Separation** supaya slime tidak bertumpuk, dan garis biru **Wander** agar geraknya tidak kaku. Setiap kali akan melompat, ketiga gaya ini dijumlahkan dengan bobot untuk menentukan arah lompatan. Slime besar membelah jadi dua saat kalah. Perhatikan juga: Capy menebas otomatis sambil saya berlari, dan arah tebasannya mengikuti kursor mouse."
 
 ### 2.3 Skeleton: FSM dan A* (04:00 - 05:00)
 
@@ -102,7 +104,7 @@ Di kolom kanan terlihat bagian terpenting untuk mata kuliah ini: setiap musuh me
 **Tampilan layar:** Tekan `Esc`, pilih **RESTART** (atau pakai game yang masih berjalan di ruangan mana pun). Tekan `F10`, lalu `V`.
 
 **Narasi:**
-"Satu fitur tambahan: Autopilot dengan tombol F10. Di sini AI yang memainkan Capy, memakai **utility AI** atau context steering. Setiap frame ada 16 arah gerak plus pilihan diam yang diberi skor. Skornya berkurang oleh bahaya, yaitu musuh dekat, proyektil yang mendekat, area merah, dan shockwave, dan bertambah oleh tujuan seperti pintu, peti, atau Golden Yuzu. Garis hijau adalah arah yang aman, merah yang berbahaya, dan garis paling tebal adalah pilihannya. Fitur ini juga kami pakai untuk menguji keseimbangan game secara otomatis. Dalam lima uji, Autopilot selalu menang dengan waktu sekitar 3 sampai 4 menit, dan dari hasil itu kami menaikkan HP musuh per ruangan serta HP boss."
+"Satu fitur tambahan: Autopilot dengan tombol F10. Di sini AI yang memainkan Capy, memakai **utility AI** atau context steering. Setiap frame ada 16 arah gerak plus pilihan diam yang diberi skor. Skornya berkurang oleh bahaya, yaitu musuh dekat, proyektil yang mendekat, area merah, dan shockwave, dan bertambah oleh tujuan seperti pintu, peti, atau Golden Yuzu. Garis hijau adalah arah yang aman, merah yang berbahaya, dan garis paling tebal adalah pilihannya. Fitur ini juga kami pakai untuk menguji keseimbangan game secara otomatis. Dari hasil uji itu kami menaikkan HP musuh per ruangan serta HP boss. Kami juga menghitung bahwa skill serangan yang saling berlipat membuat damage bisa mencapai sekitar 125 kali lipat. Karena itu bonus damage dan kecepatan serang sekarang dijumlah, gelombang tambahan hanya setengah damage, dan serangan lebih lambat saat berlari."
 
 ### 3.4 Penutup (09:30 - 10:00)
 
@@ -121,4 +123,5 @@ Di kolom kanan terlihat bagian terpenting untuk mata kuliah ini: setiap musuh me
 | Apa beda FSM skeleton dan BT wizard? | FSM: satu state aktif dan transisi ditulis eksplisit di tiap state. BT: setiap frame pohon dievaluasi dari akar, prioritas ditentukan urutan cabang, jadi mudah menambah perilaku baru tanpa mengubah transisi lain. |
 | Bagaimana flocking dibatasi agar tidak keluar ruangan? | Ada gaya Bounds yang mendorong kelelawar kembali ke tengah jika melewati batas, ditambah posisinya di-clamp ke dalam ruangan. |
 | Bagaimana keseimbangan kesulitan diuji? | Dengan Autopilot dan skrip uji otomatis yang mencatat durasi tiap ruangan dan damage. HP dan damage musuh dinaikkan per ruangan dari hasil uji itu. Angkanya ada di README. |
-| Asetnya dari mana? | Semua model dari primitif Unity, tekstur dan ikon digambar dengan kode (signed distance function dan noise), suara dan musik disintesis dengan kode. Hanya dua font dari Google Fonts (lisensi OFL). |
+| Asetnya dari mana? | Model karakter dibuat tim secara prosedural dengan script Python di Blender, lalu diimpor sebagai FBX (Skeleton Archer dan properti level masih dari primitif Unity). Tekstur dan ikon digambar dengan kode (signed distance function dan noise), suara dan musik disintesis dengan kode. Hanya dua font dari Google Fonts (lisensi OFL). |
+| Kenapa serangannya sambil berlari, bukan diam seperti Archero? | Mengikuti HoloCure: pemain menghindar dengan WASD dan membidik dengan mouse secara bersamaan. Supaya tidak terlalu kuat, kecepatan serang turun 30% saat berlari. |

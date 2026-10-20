@@ -91,10 +91,11 @@ public class GolemBossAI : EnemyBase
     {
         if (mat != null && glowRenderers != null)
         {
+            Material[] crystals = { dormantMaterial, awakeMaterial, enragedMaterial };
             foreach (Renderer r in glowRenderers)
             {
                 if (r != null)
-                    SetMaterial(r, mat);
+                    ReplaceMaterial(r, mat, crystals);
             }
         }
         if (coreLight != null)

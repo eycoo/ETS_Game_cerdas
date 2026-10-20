@@ -119,8 +119,8 @@ public class MainMenuController : MonoBehaviour
         g.lineSpacing = 1.1f;
         g.rectTransform.Place(new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(70f, -150f), new Vector2(680f, 240f));
 
-        string keys = "WASD / Arrows\nStand still\nSPACE / Shift\n1 / 2 / 3\nV\nF10\nESC";
-        string actions = "Move\nAuto-attack nearest enemy\nDash (invincible)\nPick a skill card\nAI Vision (see the AI think)\nAutopilot (AI plays for you)\nPause";
+        string keys = "WASD / Arrows\nMouse\nSPACE / Shift\n1 / 2 / 3\nV\nF10\nESC";
+        string actions = "Move\nAim auto-attack\nDash (invincible)\nPick a skill card\nAI Vision (see the AI think)\nAutopilot (AI plays for you)\nPause";
         Text k = UIFactory.Text(box.transform, "Keys", keys, 29, new Color(1f, 0.82f, 0.45f), TextAnchor.UpperLeft, false, 1.5f);
         k.lineSpacing = 1.12f;
         k.rectTransform.Place(new Vector2(0f, 1f), new Vector2(0f, 1f), new Vector2(70f, -362f), new Vector2(240f, 380f));

@@ -71,7 +71,8 @@ public class PlayerController : MonoBehaviour
         Vector2 input = CapyInput.Move();
         moveInput = new Vector3(input.x, 0f, input.y);
         IsMoving = moveInput.sqrMagnitude > 0.01f;
-        if (IsMoving && !IsDashing)
+        // Saat menyerang, Capy menghadap arah bidikan (diatur PlayerCombat), bukan arah lari.
+        if (IsMoving && !IsDashing && !Combat.IsAttacking)
             Facing = moveInput.normalized;
 
         dashCooldownTimer -= Time.deltaTime;

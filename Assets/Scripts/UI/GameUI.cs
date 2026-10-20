@@ -741,7 +741,7 @@ public class GameUI : MonoBehaviour
         sfxLabel = sfx.GetComponentInChildren<Text>();
 
         Text controls = UIFactory.Text(box.transform, "Controls",
-            "<color=#FFB347>WASD / Arrows</color>  move\n<color=#FFB347>Stand still</color>  auto-attack\n<color=#FFB347>SPACE / Shift</color>  dash (invincible)\n<color=#FFB347>V</color>  AI Vision     <color=#FFB347>F10</color>  Autopilot",
+            "<color=#FFB347>WASD / Arrows</color>  move\n<color=#FFB347>Mouse</color>  aim auto-attack\n<color=#FFB347>SPACE / Shift</color>  dash (invincible)\n<color=#FFB347>V</color>  AI Vision     <color=#FFB347>F10</color>  Autopilot",
             27, UIFactory.Cream, TextAnchor.UpperCenter, false, 1.5f);
         controls.lineSpacing = 1.15f;
         controls.rectTransform.Place(new Vector2(0.5f, 1f), new Vector2(0.5f, 1f), new Vector2(0f, -570f), new Vector2(640f, 200f));

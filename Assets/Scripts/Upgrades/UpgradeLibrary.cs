@@ -58,24 +58,24 @@ public static class UpgradeLibrary
     {
         List<UpgradeDef> list = new List<UpgradeDef>();
 
-        list.Add(Def(UpgradeId.TwinSlash, "Twin Slash", "Each swing fires one more wave right after.", 3, Attack,
+        list.Add(Def(UpgradeId.TwinSlash, "Twin Slash", "Each swing fires one more half-damage wave right after.", 3, Attack,
             p => p.Stats.Multishot++));
-        list.Add(Def(UpgradeId.WideSwing, "Wide Swing", "+1 parallel sword wave.", 2, Attack,
+        list.Add(Def(UpgradeId.WideSwing, "Wide Swing", "+1 parallel half-damage wave.", 2, Attack,
             p => p.Stats.Front++));
-        list.Add(Def(UpgradeId.DiagonalSlash, "Diagonal Slash", "+2 waves at diagonal angles.", 2, Attack,
+        list.Add(Def(UpgradeId.DiagonalSlash, "Diagonal Slash", "+2 half-damage waves at diagonal angles.", 2, Attack,
             p => p.Stats.DiagonalPairs++));
-        list.Add(Def(UpgradeId.RearGuard, "Rear Guard", "Also slash behind you.", 1, Attack,
+        list.Add(Def(UpgradeId.RearGuard, "Rear Guard", "Also slash behind you (half damage).", 1, Attack,
             p => p.Stats.Rear++));
         list.Add(Def(UpgradeId.PiercingEdge, "Piercing Edge", "Waves pass through +1 enemy.", 3, Attack,
             p => p.Stats.Pierce++));
         list.Add(Def(UpgradeId.BouncyBlade, "Bouncy Blade", "Waves bounce to +1 nearby enemy.", 3, Attack,
             p => p.Stats.Ricochet++));
         list.Add(Def(UpgradeId.SharpSword, "Sharp Sword", "+25% damage.", 5, Attack,
-            p => p.Stats.Damage *= 1.25f));
+            p => p.Stats.Damage += PlayerStats.BaseDamage * 0.25f));
         list.Add(Def(UpgradeId.Zoomies, "Zoomies", "+12% move speed.", 3, Utility,
             p => p.Stats.MoveSpeed *= 1.12f));
         list.Add(Def(UpgradeId.ChillVibes, "Chill Vibes", "+20% attack speed.", 5, Utility,
-            p => p.Stats.AttackInterval /= 1.2f));
+            p => p.Stats.AttackInterval = PlayerStats.BaseAttackInterval / (1f + 0.2f * (p.Stats.GetLevel(UpgradeId.ChillVibes) + 1))));
         list.Add(Def(UpgradeId.ThickFur, "Thick Fur", "+25 max HP and heal 25.", 5, Defense,
             p => p.Health.IncreaseMax(25f)));
         list.Add(Def(UpgradeId.YuzuSnack, "Yuzu Snack", "Heal 40% HP right now.", 99, Defense,

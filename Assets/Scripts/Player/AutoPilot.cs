@@ -5,7 +5,8 @@ using UnityEngine;
 // Capy dikendalikan AI. Setiap frame, 16 arah gerak + pilihan "diam" diberi skor:
 //   skor = - bahaya (musuh dekat, proyektil yang mendekat, area telegraph, shockwave)
 //          - penalti tembok + tarikan ke tujuan (pintu, peti, onsen, Golden Yuzu)
-// Pilihan dengan skor tertinggi dijalankan. "Diam" berarti menyerang (aturan Archero).
+// Pilihan dengan skor tertinggi dijalankan. Serangan berjalan otomatis ke musuh terdekat
+// (PlayerCombat), jadi AI cukup mengatur posisi.
 // Dipakai juga untuk pengujian otomatis seluruh game.
 public class AutoPilot : MonoBehaviour
 {
@@ -133,7 +134,7 @@ public class AutoPilot : MonoBehaviour
             }
         }
 
-        // Pilihan diam: menyerang. Lebih menarik jika ada musuh dan posisi sekarang aman.
+        // Pilihan diam: bertahan di posisi sambil menyerang. Lebih menarik jika ada musuh dan posisi sekarang aman.
         stayScore = enemies ? 1.2f - hereDanger * 1.2f + KeepRangeBonus(pos) : -10f;
         if (!enemies && !hasObjective)
             stayScore = 0f;
@@ -141,7 +142,7 @@ public class AutoPilot : MonoBehaviour
         if (stayScore >= bestScore)
         {
             chosen = -1;
-            Mode = enemies ? "ATTACK (stand still)" : "IDLE";
+            Mode = enemies ? "ATTACK (hold position)" : "IDLE";
             CapyInput.MoveOverride = Vector2.zero;
         }
         else

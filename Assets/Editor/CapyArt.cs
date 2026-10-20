@@ -325,70 +325,128 @@ public static class CapyArt
 
     // ================================================================== karakter
 
-    // Capybara: badan bulat, jeruk di kepala, syal hijau, pedang di tangan kanan.
-    public static Transform Capybara(Transform parent)
+    // Model karakter dari CapyQuest_Assets (FBX, struktur Root > Visual > Body + bagian).
+    // Bagian dipindah jadi anak langsung "Body" dan diberi nama yang dicari script AI/animasi,
+    // lalu diskalakan ke tinggi model primitif lama supaya collider dan health bar tetap pas.
+    public const string ModelFolder = "Assets/Art/Models";
+
+    private static Transform ImportedModel(Transform parent, string model, float height, Dictionary<string, string> rename,
+        Dictionary<string, Material> glowMats, List<Renderer> glowed = null, bool center = false)
     {
         Transform visual = Group("Visual", parent, Vector3.zero).transform;
-        visual.localScale = Vector3.one * 0.95f;
         Transform body = Group("Body", visual, Vector3.zero).transform;
 
-        Part(PrimitiveType.Sphere, "Torso", body, new Vector3(0f, 0.62f, 0f), new Vector3(1.12f, 1f, 1.02f), Capy);
-        Part(PrimitiveType.Sphere, "Belly", body, new Vector3(0f, 0.55f, 0.28f), new Vector3(0.78f, 0.72f, 0.5f), CapyBelly);
-        Part(PrimitiveType.Sphere, "Tail", body, new Vector3(0f, 0.5f, -0.5f), Vector3.one * 0.15f, CapyDark);
-        Part(PrimitiveType.Sphere, "Head", body, new Vector3(0f, 1.28f, 0.06f), new Vector3(0.98f, 0.86f, 0.94f), Capy);
-        Part(PrimitiveType.Sphere, "Muzzle", body, new Vector3(0f, 1.17f, 0.42f), new Vector3(0.66f, 0.5f, 0.5f), CapyDark);
-        Part(PrimitiveType.Sphere, "Nose", body, new Vector3(0f, 1.3f, 0.66f), new Vector3(0.3f, 0.1f, 0.1f), Nose);
-        Part(PrimitiveType.Cube, "MouthL", body, new Vector3(-0.035f, 1.09f, 0.66f), new Vector3(0.08f, 0.022f, 0.02f), Nose, new Vector3(0f, 0f, -25f));
-        Part(PrimitiveType.Cube, "MouthR", body, new Vector3(0.035f, 1.09f, 0.66f), new Vector3(0.08f, 0.022f, 0.02f), Nose, new Vector3(0f, 0f, 25f));
-        for (int s = -1; s <= 1; s += 2)
+        GameObject src = AssetDatabase.LoadAssetAtPath<GameObject>(ModelFolder + "/" + model + ".fbx");
+        GameObject inst = Object.Instantiate(src);
+        inst.transform.SetParent(body, false);
+        Transform srcVisual = inst.transform.Find("Visual");
+        Transform srcBody = srcVisual.Find("Body");
+        List<Transform> parts = new List<Transform>();
+        foreach (Transform c in srcBody) parts.Add(c);
+        foreach (Transform c in srcVisual) if (c != srcBody) parts.Add(c);
+        srcBody.SetParent(body, true);
+        srcBody.name = "Torso";
+        foreach (Transform p in parts) p.SetParent(body, true);
+        Object.DestroyImmediate(inst);
+
+        // Script memakai body.Find(nama), jadi bagian yang di-rename harus anak langsung Body.
+        foreach (Transform t in body.GetComponentsInChildren<Transform>(true))
         {
-            Part(PrimitiveType.Sphere, s < 0 ? "EyeL" : "EyeR", body, new Vector3(0.22f * s, 1.42f, 0.42f), Vector3.one * 0.13f, Black);
-            Part(PrimitiveType.Sphere, "Shine", body, new Vector3(0.2f * s + 0.02f, 1.455f, 0.48f), Vector3.one * 0.045f, White);
-            Part(PrimitiveType.Sphere, "Cheek", body, new Vector3(0.34f * s, 1.23f, 0.38f), new Vector3(0.15f, 0.08f, 0.05f), Blush);
-            Part(PrimitiveType.Sphere, "Ear", body, new Vector3(0.32f * s, 1.67f, -0.02f), new Vector3(0.2f, 0.2f, 0.12f), CapyDark);
-            Part(PrimitiveType.Sphere, s < 0 ? "FootL" : "FootR", body, new Vector3(0.26f * s, 0.1f, 0.1f), new Vector3(0.3f, 0.2f, 0.42f), CapyDark);
+            string newName;
+            if (t == body || !rename.TryGetValue(t.name, out newName))
+                continue;
+            t.SetParent(body, true);
+            t.name = newName;
         }
 
-        Transform yuzu = Group("Yuzu", body, new Vector3(0f, 1.83f, 0.04f)).transform;
-        Part(PrimitiveType.Sphere, "Fruit", yuzu, Vector3.zero, Vector3.one * 0.36f, Yuzu);
-        Part(PrimitiveType.Cylinder, "Stem", yuzu, new Vector3(0f, 0.19f, 0f), new Vector3(0.04f, 0.03f, 0.04f), WoodDark);
-        Part(PrimitiveType.Sphere, "Leaf", yuzu, new Vector3(0.09f, 0.21f, 0f), new Vector3(0.2f, 0.04f, 0.1f), Leaf, new Vector3(0f, 0f, 20f));
+        if (glowMats != null)
+        {
+            foreach (MeshRenderer r in body.GetComponentsInChildren<MeshRenderer>(true))
+            {
+                Material[] mats = r.sharedMaterials;
+                bool changed = false;
+                for (int i = 0; i < mats.Length; i++)
+                {
+                    Material g;
+                    if (mats[i] != null && glowMats.TryGetValue(mats[i].name, out g))
+                    {
+                        mats[i] = g;
+                        changed = true;
+                    }
+                }
+                if (!changed)
+                    continue;
+                r.sharedMaterials = mats;
+                if (glowed != null)
+                    glowed.Add(r);
+            }
+        }
 
-        Part(PrimitiveType.Cylinder, "Scarf", body, new Vector3(0f, 0.98f, 0.02f), new Vector3(0.92f, 0.08f, 0.88f), Scarf);
-        Part(PrimitiveType.Sphere, "Knot", body, new Vector3(0.18f, 0.95f, 0.42f), Vector3.one * 0.16f, Scarf);
-        Transform tail = Group("ScarfTail", body, new Vector3(0.22f, 0.95f, 0.42f)).transform;
-        Part(PrimitiveType.Cube, "Cloth", tail, new Vector3(0f, -0.22f, 0f), new Vector3(0.17f, 0.42f, 0.06f), Scarf);
-        Part(PrimitiveType.Cube, "Stripe", tail, new Vector3(0f, -0.36f, 0.005f), new Vector3(0.18f, 0.05f, 0.065f), ScarfDark);
+        // FBX dari Blender menghadap -Z di Unity, sedangkan script menganggap depan = +Z.
+        // Tiap bagian dibungkus pivot tanpa rotasi (yang dirotasi script secara absolut),
+        // mesh di dalamnya yang diputar 180° di sumbu Y.
+        List<Transform> children = new List<Transform>();
+        foreach (Transform c in body) children.Add(c);
+        foreach (Transform c in children)
+        {
+            Transform pivot = Group(c.name, body, Vector3.Scale(c.localPosition, new Vector3(-1f, 1f, -1f))).transform;
+            Quaternion rot = Quaternion.Euler(0f, 180f, 0f) * c.localRotation;
+            c.SetParent(pivot, false);
+            c.localPosition = Vector3.zero;
+            c.localRotation = rot;
+        }
 
-        Part(PrimitiveType.Sphere, "ArmL", body, new Vector3(-0.5f, 0.68f, 0.16f), new Vector3(0.24f, 0.34f, 0.24f), Capy);
-
-        Transform sword = Group("SwordPivot", body, new Vector3(0.5f, 0.72f, 0.2f)).transform;
-        sword.localRotation = Quaternion.Euler(-35f, 0f, -12f);
-        Part(PrimitiveType.Sphere, "Hand", sword, Vector3.zero, Vector3.one * 0.26f, Capy);
-        Part(PrimitiveType.Cylinder, "Grip", sword, new Vector3(0f, 0.02f, 0f), new Vector3(0.06f, 0.09f, 0.06f), WoodDark);
-        Part(PrimitiveType.Sphere, "Pommel", sword, new Vector3(0f, -0.09f, 0f), Vector3.one * 0.08f, Gold);
-        Part(PrimitiveType.Cube, "Guard", sword, new Vector3(0f, 0.12f, 0f), new Vector3(0.3f, 0.06f, 0.08f), Gold);
-        Part(PrimitiveType.Cube, "Blade", sword, new Vector3(0f, 0.5f, 0f), new Vector3(0.11f, 0.7f, 0.035f), Steel);
-        Part(PrimitiveType.Cube, "Tip", sword, new Vector3(0f, 0.85f, 0f), new Vector3(0.078f, 0.078f, 0.035f), Steel, new Vector3(0f, 0f, 45f));
+        // Skala ditaruh di tiap bagian (bukan Visual/Body) karena script menulis localScale Body
+        // dan offset localPosition Body dalam satuan dunia.
+        Bounds b = LocalBounds(body);
+        Vector3 offset = center ? b.center : Vector3.zero;
+        float s = height / b.size.y;
+        foreach (Transform c in body)
+        {
+            c.localPosition = (c.localPosition - offset) * s;
+            c.localScale *= s;
+        }
         return visual;
+    }
+
+    public static Bounds LocalBounds(Transform space)
+    {
+        Bounds b = new Bounds();
+        bool first = true;
+        foreach (MeshFilter mf in space.GetComponentsInChildren<MeshFilter>(true))
+        {
+            Bounds m = mf.sharedMesh.bounds;
+            Matrix4x4 toSpace = space.worldToLocalMatrix * mf.transform.localToWorldMatrix;
+            for (int i = 0; i < 8; i++)
+            {
+                Vector3 corner = m.center + Vector3.Scale(m.extents, new Vector3((i & 1) == 0 ? -1f : 1f, (i & 2) == 0 ? -1f : 1f, (i & 4) == 0 ? -1f : 1f));
+                Vector3 p = toSpace.MultiplyPoint3x4(corner);
+                if (first)
+                {
+                    b = new Bounds(p, Vector3.zero);
+                    first = false;
+                }
+                else
+                {
+                    b.Encapsulate(p);
+                }
+            }
+        }
+        return b;
+    }
+
+    // Capybara (Kapi): jeruk dan syal sudah menyatu di mesh Body; pedang berputar di gagangnya.
+    public static Transform Capybara(Transform parent)
+    {
+        return ImportedModel(parent, "Kapi", 1.95f,
+            new Dictionary<string, string> { { "Sword", "SwordPivot" }, { "Leg_L", "FootL" }, { "Leg_R", "FootR" } },
+            null);
     }
 
     public static Transform Slime(Transform parent, float scale)
     {
-        Transform visual = Group("Visual", parent, Vector3.zero).transform;
+        Transform visual = ImportedModel(parent, "Goo", 1.2f, new Dictionary<string, string>(), null);
         visual.localScale = Vector3.one * scale;
-        Transform body = Group("Body", visual, Vector3.zero).transform;
-        Part(PrimitiveType.Sphere, "Base", body, new Vector3(0f, 0.26f, 0f), new Vector3(1.42f, 0.52f, 1.42f), SlimeMat);
-        Part(PrimitiveType.Sphere, "Blob", body, new Vector3(0f, 0.52f, 0f), new Vector3(1.3f, 1f, 1.3f), SlimeMat);
-        Part(PrimitiveType.Sphere, "Tip", body, new Vector3(0f, 1.02f, -0.02f), new Vector3(0.3f, 0.42f, 0.3f), SlimeMat, new Vector3(-12f, 0f, 0f));
-        for (int s = -1; s <= 1; s += 2)
-        {
-            Part(PrimitiveType.Sphere, "Eye", body, new Vector3(0.22f * s, 0.63f, 0.57f), new Vector3(0.13f, 0.16f, 0.08f), Black);
-            Part(PrimitiveType.Sphere, "Shine", body, new Vector3(0.22f * s + 0.025f, 0.67f, 0.61f), Vector3.one * 0.045f, White);
-            Part(PrimitiveType.Sphere, "Blush", body, new Vector3(0.38f * s, 0.5f, 0.49f), new Vector3(0.14f, 0.07f, 0.05f), Blush);
-            Part(PrimitiveType.Cube, "Mouth", body, new Vector3(0.03f * s, 0.48f, 0.635f), new Vector3(0.07f, 0.022f, 0.02f), SlimeDark, new Vector3(0f, 0f, 30f * s));
-        }
-        Part(PrimitiveType.Sphere, "Gloss", body, new Vector3(-0.32f, 0.84f, 0.36f), new Vector3(0.22f, 0.13f, 0.1f), White, new Vector3(0f, 0f, 35f));
         return visual;
     }
 
@@ -415,26 +473,12 @@ public static class CapyArt
         return visual;
     }
 
+    // Skeleton (BoneKnight): lengan kanan + senjata berayun dari bahu.
     public static Transform SkeletonWarrior(Transform parent)
     {
-        Transform body;
-        Transform visual = SkeletonBase(parent, out body);
-        Part(PrimitiveType.Sphere, "Helmet", body, new Vector3(0f, 1.86f, 0f), new Vector3(0.58f, 0.36f, 0.58f), Helmet);
-        Part(PrimitiveType.Cylinder, "Rim", body, new Vector3(0f, 1.81f, 0f), new Vector3(0.6f, 0.02f, 0.6f), Iron);
-        for (int s = -1; s <= 1; s += 2)
-            Part(PrimitiveType.Capsule, "Horn", body, new Vector3(0.27f * s, 2.0f, 0f), new Vector3(0.08f, 0.15f, 0.08f), Bone, new Vector3(0f, 0f, -35f * s));
-        Part(PrimitiveType.Capsule, "ArmL", body, new Vector3(-0.36f, 1.16f, 0.06f), new Vector3(0.07f, 0.24f, 0.07f), Bone, new Vector3(20f, 0f, 15f));
-        Part(PrimitiveType.Cylinder, "ShieldRim", body, new Vector3(-0.44f, 1.05f, 0.25f), new Vector3(0.6f, 0.03f, 0.6f), Iron, new Vector3(90f, 0f, 0f));
-        Part(PrimitiveType.Cylinder, "Shield", body, new Vector3(-0.44f, 1.05f, 0.27f), new Vector3(0.55f, 0.035f, 0.55f), Wood, new Vector3(90f, 0f, 0f));
-        Part(PrimitiveType.Cube, "ShieldBand", body, new Vector3(-0.44f, 1.05f, 0.3f), new Vector3(0.56f, 0.06f, 0.02f), Iron);
-        Part(PrimitiveType.Sphere, "Boss", body, new Vector3(-0.44f, 1.05f, 0.31f), Vector3.one * 0.13f, Iron);
-
-        Transform sword = Group("SwordPivot", body, new Vector3(0.36f, 1.12f, 0.12f)).transform;
-        Part(PrimitiveType.Capsule, "Arm", sword, new Vector3(0f, -0.05f, 0f), new Vector3(0.07f, 0.2f, 0.07f), Bone);
-        Part(PrimitiveType.Cylinder, "Grip", sword, new Vector3(0f, 0.08f, 0.06f), new Vector3(0.05f, 0.08f, 0.05f), Leather);
-        Part(PrimitiveType.Cube, "Guard", sword, new Vector3(0f, 0.16f, 0.06f), new Vector3(0.24f, 0.05f, 0.06f), Iron);
-        Part(PrimitiveType.Cube, "Blade", sword, new Vector3(0f, 0.48f, 0.06f), new Vector3(0.1f, 0.6f, 0.035f), DarkSteel);
-        return visual;
+        return ImportedModel(parent, "BoneKnight", 2.1f,
+            new Dictionary<string, string> { { "Arm_R", "SwordPivot" }, { "Leg_L", "LegL" }, { "Leg_R", "LegR" } },
+            new Dictionary<string, Material> { { "Glow_Ember", RedEye } });
     }
 
     public static Transform SkeletonArcher(Transform parent)
@@ -456,92 +500,37 @@ public static class CapyArt
         return visual;
     }
 
+    // Wizard (HexMage): tongkat dilepas dari lengan jadi Body/Staff, titik Orb di ujungnya untuk efek dan proyektil.
     public static Transform Wizard(Transform parent)
     {
-        Transform visual = Group("Visual", parent, Vector3.zero).transform;
-        Transform body = Group("Body", visual, new Vector3(0f, 0.15f, 0f)).transform;
-        Part(PrimitiveType.Cylinder, "RobeHem", body, new Vector3(0f, 0.22f, 0f), new Vector3(1.15f, 0.22f, 1.15f), Robe);
-        Part(PrimitiveType.Cylinder, "Trim", body, new Vector3(0f, 0.02f, 0f), new Vector3(1.19f, 0.035f, 1.19f), Gold);
-        Part(PrimitiveType.Cylinder, "RobeMid", body, new Vector3(0f, 0.6f, 0f), new Vector3(0.95f, 0.22f, 0.95f), Robe);
-        Part(PrimitiveType.Capsule, "Torso", body, new Vector3(0f, 1.05f, 0f), new Vector3(0.75f, 0.5f, 0.7f), Robe);
-        Part(PrimitiveType.Cylinder, "Belt", body, new Vector3(0f, 0.86f, 0f), new Vector3(0.78f, 0.04f, 0.74f), Gold);
-        Part(PrimitiveType.Cube, "Gem", body, new Vector3(0f, 1.12f, 0.36f), Vector3.one * 0.12f, OrbGlow, new Vector3(0f, 0f, 45f));
-        Part(PrimitiveType.Sphere, "Hood", body, new Vector3(0f, 1.62f, 0f), new Vector3(0.82f, 0.8f, 0.82f), Robe);
-        Part(PrimitiveType.Sphere, "HoodTip", body, new Vector3(0f, 2.0f, -0.08f), new Vector3(0.3f, 0.42f, 0.3f), Robe, new Vector3(-20f, 0f, 0f));
-        Part(PrimitiveType.Sphere, "HoodTip2", body, new Vector3(0f, 2.22f, -0.2f), new Vector3(0.14f, 0.24f, 0.14f), RobeDark, new Vector3(-38f, 0f, 0f));
-        Part(PrimitiveType.Sphere, "Face", body, new Vector3(0f, 1.58f, 0.2f), new Vector3(0.56f, 0.54f, 0.45f), VoidMat);
-        for (int s = -1; s <= 1; s += 2)
-        {
-            Part(PrimitiveType.Sphere, "Eye", body, new Vector3(0.1f * s, 1.6f, 0.42f), new Vector3(0.09f, 0.06f, 0.04f), WizEye);
-            Part(PrimitiveType.Capsule, "Sleeve", body, new Vector3(0.42f * s, 1.0f, 0.12f), new Vector3(0.22f, 0.28f, 0.22f), RobeDark, new Vector3(20f, 0f, -15f * s));
-        }
-        Transform staff = Group("Staff", body, new Vector3(0.5f, 0f, 0.2f)).transform;
-        Part(PrimitiveType.Cylinder, "Pole", staff, new Vector3(0f, 1.05f, 0f), new Vector3(0.06f, 1.05f, 0.06f), Wood);
-        Part(PrimitiveType.Cylinder, "Ring", staff, new Vector3(0f, 2.1f, 0f), new Vector3(0.26f, 0.02f, 0.26f), Gold);
-        Part(PrimitiveType.Sphere, "Orb", staff, new Vector3(0f, 2.24f, 0f), Vector3.one * 0.24f, OrbGlow);
-        PointLight(staff, new Vector3(0f, 2.24f, 0f), new Color(0.85f, 0.5f, 1f), 4.5f, 2.5f);
+        Transform visual = ImportedModel(parent, "HexMage", 2.4f,
+            new Dictionary<string, string> { { "Staff", "Staff" } },
+            new Dictionary<string, Material> { { "Glow_Magic", OrbGlow } });
+        Transform staff = visual.Find("Body/Staff");
+        Bounds b = LocalBounds(staff);
+        Transform orb = Group("Orb", staff, new Vector3(b.center.x, b.max.y - b.size.x * 0.5f, b.center.z)).transform;
+        PointLight(orb, Vector3.zero, new Color(0.85f, 0.5f, 1f), 4.5f, 2.5f);
         return visual;
     }
 
+    // Eye Bat (Peeper): mesh dipusatkan di Body karena ketinggian terbang diatur script.
     public static Transform Bat(Transform parent)
     {
-        Transform visual = Group("Visual", parent, Vector3.zero).transform;
-        Transform body = Group("Body", visual, Vector3.zero).transform;
-        Part(PrimitiveType.Sphere, "Eyeball", body, Vector3.zero, Vector3.one * 0.8f, EyeWhite);
-        Part(PrimitiveType.Sphere, "Lid", body, new Vector3(0f, 0.14f, -0.05f), new Vector3(0.86f, 0.64f, 0.86f), BatLid);
-        Part(PrimitiveType.Sphere, "Iris", body, new Vector3(0f, -0.03f, 0.3f), new Vector3(0.42f, 0.42f, 0.2f), Iris);
-        Part(PrimitiveType.Sphere, "Pupil", body, new Vector3(0f, -0.03f, 0.385f), new Vector3(0.17f, 0.21f, 0.06f), Black);
-        Part(PrimitiveType.Sphere, "Shine", body, new Vector3(0.09f, 0.05f, 0.4f), Vector3.one * 0.06f, White);
-        for (int s = -1; s <= 1; s += 2)
-        {
-            Part(PrimitiveType.Sphere, "Horn", body, new Vector3(0.22f * s, 0.42f, -0.02f), new Vector3(0.13f, 0.2f, 0.13f), Bone, new Vector3(0f, 0f, -20f * s));
-            Transform wing = Group(s < 0 ? "WingL" : "WingR", body, new Vector3(0.36f * s, 0.05f, -0.05f)).transform;
-            Part(PrimitiveType.Cube, "Arm", wing, new Vector3(0.35f * s, 0.1f, 0f), new Vector3(0.72f, 0.07f, 0.07f), BatLid, new Vector3(0f, 0f, 10f * s));
-            Part(PrimitiveType.Cube, "Membrane", wing, new Vector3(0.38f * s, -0.05f, 0f), new Vector3(0.72f, 0.34f, 0.04f), BatWing);
-            for (int k = 0; k < 3; k++)
-                Part(PrimitiveType.Sphere, "Scallop", wing, new Vector3((0.15f + k * 0.25f) * s, -0.2f, 0f), new Vector3(0.24f, 0.14f, 0.04f), BatWing);
-        }
-        return visual;
+        return ImportedModel(parent, "Peeper", 1f,
+            new Dictionary<string, string> { { "Wing_L", "WingL" }, { "Wing_R", "WingR" } },
+            null, null, true);
     }
 
+    // Golem King (CrystalGolem): slot Glow_Core diganti material kristal supaya bisa berubah warna per fase.
     public static Transform Golem(Transform parent, out Renderer[] glow, out Light coreLight)
     {
         List<Renderer> glows = new List<Renderer>();
-        Transform visual = Group("Visual", parent, Vector3.zero).transform;
-        Transform body = Group("Body", visual, Vector3.zero).transform;
-
-        for (int s = -1; s <= 1; s += 2)
-        {
-            Transform leg = Group(s < 0 ? "LegL" : "LegR", body, new Vector3(0.75f * s, 1.7f, 0f)).transform;
-            Part(PrimitiveType.Cube, "Leg", leg, new Vector3(0f, -0.8f, 0f), new Vector3(0.9f, 1.6f, 1f), GolemDark);
-            Part(PrimitiveType.Cube, "Foot", leg, new Vector3(0f, -1.55f, 0.12f), new Vector3(1.05f, 0.32f, 1.25f), GolemDark);
-        }
-        Part(PrimitiveType.Cube, "Pelvis", body, new Vector3(0f, 1.85f, 0f), new Vector3(2f, 0.5f, 1.2f), GolemDark);
-        Part(PrimitiveType.Cube, "Torso", body, new Vector3(0f, 3f, 0f), new Vector3(3f, 2f, 1.7f), GolemStone);
-        Part(PrimitiveType.Cube, "ChestPlate", body, new Vector3(0f, 3.1f, 0.86f), new Vector3(1.1f, 1.1f, 0.06f), GolemDark);
-        glows.Add(Part(PrimitiveType.Cube, "Core", body, new Vector3(0f, 3.1f, 0.92f), new Vector3(0.5f, 0.5f, 0.12f), CrystalCyan, new Vector3(0f, 0f, 45f)).GetComponent<Renderer>());
-        Part(PrimitiveType.Cube, "MossBack", body, new Vector3(0.6f, 3.95f, -0.3f), new Vector3(1.2f, 0.12f, 1f), Moss);
-
-        Transform head = Group("Head", body, new Vector3(0f, 4.05f, 0.1f)).transform;
-        Part(PrimitiveType.Cube, "Skull", head, new Vector3(0f, 0.45f, 0f), new Vector3(1.25f, 0.95f, 1.1f), GolemStone);
-        Part(PrimitiveType.Cube, "Brow", head, new Vector3(0f, 0.72f, 0.5f), new Vector3(1.3f, 0.14f, 0.2f), GolemDark);
-        glows.Add(Part(PrimitiveType.Cube, "Eyes", head, new Vector3(0f, 0.5f, 0.56f), new Vector3(0.85f, 0.16f, 0.06f), CrystalCyan).GetComponent<Renderer>());
-        Part(PrimitiveType.Cube, "Moss", head, new Vector3(0f, 0.95f, 0f), new Vector3(1.05f, 0.12f, 0.9f), Moss);
-
-        for (int s = -1; s <= 1; s += 2)
-        {
-            Part(PrimitiveType.Cube, "Shoulder", body, new Vector3(1.9f * s, 3.75f, 0f), new Vector3(1.15f, 1f, 1.3f), GolemDark);
-            Part(PrimitiveType.Cube, "ShoulderMoss", body, new Vector3(1.9f * s, 4.28f, 0f), new Vector3(1f, 0.1f, 1.1f), Moss);
-            glows.Add(Part(PrimitiveType.Cube, "Spike", body, new Vector3(2.15f * s, 4.5f, -0.1f), new Vector3(0.25f, 0.75f, 0.25f), CrystalCyan, new Vector3(0f, 0f, -25f * s)).GetComponent<Renderer>());
-            glows.Add(Part(PrimitiveType.Cube, "Spike2", body, new Vector3(1.75f * s, 4.42f, 0.25f), new Vector3(0.18f, 0.45f, 0.18f), CrystalCyan, new Vector3(15f, 0f, -10f * s)).GetComponent<Renderer>());
-
-            Transform arm = Group(s < 0 ? "ArmL" : "ArmR", body, new Vector3(1.95f * s, 3.55f, 0f)).transform;
-            Part(PrimitiveType.Cube, "Upper", arm, new Vector3(0f, -0.85f, 0f), new Vector3(0.85f, 1.4f, 0.85f), GolemStone);
-            Part(PrimitiveType.Cube, "Band", arm, new Vector3(0f, -1.6f, 0.1f), new Vector3(1.42f, 0.2f, 1.42f), GolemDark);
-            Part(PrimitiveType.Cube, "Fist", arm, new Vector3(0f, -2.05f, 0.1f), new Vector3(1.35f, 1.15f, 1.35f), GolemStone);
-        }
-
-        coreLight = PointLight(body, new Vector3(0f, 3.1f, 1.6f), new Color(0.5f, 0.9f, 1f), 8f, 4f);
+        Transform visual = ImportedModel(parent, "CrystalGolem", 5f,
+            new Dictionary<string, string> { { "Arm_L", "ArmL" }, { "Arm_R", "ArmR" }, { "Leg_L", "LegL" }, { "Leg_R", "LegR" }, { "Head", "Head" } },
+            new Dictionary<string, Material> { { "Glow_Core", CrystalCyan } }, glows);
+        Transform body = visual.Find("Body");
+        Bounds b = LocalBounds(body);
+        coreLight = PointLight(body, new Vector3(b.center.x, b.min.y + b.size.y * 0.62f, b.max.z + 0.6f), new Color(0.5f, 0.9f, 1f), 8f, 4f);
         glow = glows.ToArray();
         return visual;
     }

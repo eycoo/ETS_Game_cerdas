@@ -16,6 +16,7 @@ public static class CapyInput
         UseOverride = false;
         MoveOverride = Vector2.zero;
         DashOverride = false;
+        mouseAim = true;
     }
 
     public static Vector2 Move()
@@ -43,6 +44,49 @@ public static class CapyInput
         }
 
         return Vector2.ClampMagnitude(v, 1f);
+    }
+
+    // Arah bidik serangan (gaya HoloCure): kursor mouse di lantai, atau stik kanan gamepad.
+    // Perangkat yang terakhir digerakkan yang dipakai. False berarti tidak ada bidikan manual
+    // (autopilot, atau gamepad tanpa stik kanan) sehingga serangan mengincar musuh terdekat.
+    private static bool mouseAim = true;
+
+    public static bool Aim(Vector3 origin, out Vector3 dir)
+    {
+        dir = Vector3.zero;
+        if (UseOverride)
+            return false;
+
+        Gamepad gp = Gamepad.current;
+        Vector2 stick = gp != null ? gp.rightStick.ReadValue() : Vector2.zero;
+        Mouse mouse = Mouse.current;
+        if (stick.sqrMagnitude > 0.09f)
+            mouseAim = false;
+        else if (mouse != null && (mouse.delta.ReadValue().sqrMagnitude > 0f || mouse.leftButton.isPressed))
+            mouseAim = true;
+
+        if (!mouseAim)
+        {
+            if (stick.sqrMagnitude <= 0.09f)
+                return false;
+            dir = new Vector3(stick.x, 0f, stick.y).normalized;
+            return true;
+        }
+
+        Camera cam = Camera.main;
+        if (mouse == null || cam == null)
+            return false;
+        Ray ray = cam.ScreenPointToRay(mouse.position.ReadValue());
+        Plane ground = new Plane(Vector3.up, origin);
+        float t;
+        if (!ground.Raycast(ray, out t))
+            return false;
+        dir = ray.GetPoint(t) - origin;
+        dir.y = 0f;
+        if (dir.sqrMagnitude < 0.0001f)
+            return false;
+        dir.Normalize();
+        return true;
     }
 
     public static bool DashPressed()

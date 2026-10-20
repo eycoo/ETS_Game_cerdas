@@ -100,7 +100,7 @@ public class GameManager : MonoBehaviour
         GameUI.I.ShowBanner("CAPY CONQUEST", "The Golem King stole the Golden Yuzu. Take it back!", new Color(1f, 0.72f, 0.25f), 3.4f);
         State = GameState.Playing;
         yield return new WaitForSecondsRealtime(1.0f);
-        GameUI.I.ShowHint("<b>WASD</b> move   <b>Stand still</b> auto-attack   <b>SPACE</b> dash   <b>V</b> AI Vision   <b>ESC</b> pause", 9f);
+        GameUI.I.ShowHint("<b>WASD</b> move   <b>Mouse</b> aim auto-attack   <b>SPACE</b> dash   <b>V</b> AI Vision   <b>ESC</b> pause", 9f);
     }
 
     private void Update()
